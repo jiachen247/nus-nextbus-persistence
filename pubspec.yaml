@@ -7,8 +7,9 @@ version: 0.0.1
 environment:
   sdk: '>=1.20.1 <2.0.0'
 
-#dependencies:
-#  path: ^1.4.1
+dependencies:
+  nus_nextbus_api:
+    git: https://github.com/jiachen247/nus-nextbus-api.git
 
 dev_dependencies:
   test: ^0.12.0

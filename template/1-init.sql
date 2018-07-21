@@ -4,79 +4,94 @@
  */
 
 -- Create Stops Table--
-/*
- {
-    "BusStopCode": "00481",
-    "RoadName": "Woodlands Rd",
-    "Description": "BT PANJANG TEMP BUS PK",
-    "Latitude": 1.383764,
-    "Longitude": 103.7583
-  }
- */
+CREATE TABLE Stop(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  icode TEXT UNIQUE,
+  ecode TEXT UNIQUE,
+  caption TEXT,
+  description TEXT,
+  roadName Text NOT NULL,
+  latitude REAL NOT NULL ,
+  longtitude REAL NOT NULL,
 
-CREATE TABLE Stop (
-  busStopCode TEXT PRIMARY KEY,
-  roadName TEXT NOT NULL,
-  description TEXT NOT NULL,
-  latitude REAL NOT NULL,
-  longtitude REAL NOT NULL
+  FOREIGN KEY(icode) REFERENCES IService(serviceCode)
+  --FOREIGN KEY(ecode) REFERENCES IService(serviceCode),
 );
 
--- Create Service Table --
-/*
-{
-    "ServiceNo": "118",
-    "Operator": "GAS",
-    "Direction": 1,
-    "Category": "TRUNK",
-    "OriginCode": "65009",
-    "DestinationCode": "97009",
-    "AM_Peak_Freq": "06-08",
-    "AM_Offpeak_Freq": "08-15",
-    "PM_Peak_Freq": "10-12",
-    "PM_Offpeak_Freq": "11-15",
-    "LoopDesc": ""
-}
- */
-CREATE TABLE Service (
+CREATE INDEX StopIndex ON Stop(id, icode, ecode, latitude, longtitude);
+
+-- Create Internal Service Table--
+CREATE TABLE IService (
+  serviceCode TEXT PRIMARY KEY,
+  express BOOLEAN NOT NULL,
+  frequency TEXT NOT NULL,
+  operatingHours TEXT,
+  remarks TEXT,
+  FOREIGN KEY(frequency) REFERENCES IFrequency(serviceGroup),
+  FOREIGN KEY(operatingHours) REFERENCES IOperatingHours(serviceGroup)
+);
+
+-- Create Internal Operating Hours Table--
+CREATE TABLE IOperatingHours (
+  serviceGroup TEXT PRIMARY KEY,
+  weekdayFirst TEXT,
+  weekdayLast TEXT,
+  satFirst TEXT,
+  satLast TEXT,
+  sunPhFirst TEXT,
+  sunPhLast TEXT
+);
+
+-- Create Internal Frequency Table--
+CREATE TABLE IFrequency (
+  serviceGroup TEXT NOT NULL,
+  chronology INTEGER NOT NULL,
+  timeRange TEXT NOT NULL,
+  peak BOOLEAN NOT NULL,
+  semester BOOLEAN NOT NULL,
+  weekday TEXT,
+  saturday TEXT,
+  sundayPh TEXT,
+
+  PRIMARY KEY (serviceGroup, chronology, semester),
+  FOREIGN KEY(serviceGroup) REFERENCES IService(serviceCode)
+);
+
+CREATE INDEX FrequencyIndex ON IFrequency(serviceGroup, chronology);
+
+-- Create Internal Route Table --
+CREATE TABLE IRoute (
+  serviceCode TEXT NOT NULL,
+  stopCode TEXT NOT NULL,
+  stopNumber INTEGER NOT NULL,
+  stopDesc TEXT NOT NULL,
+  PRIMARY KEY (serviceCode, stopCode, stopNumber),
+  FOREIGN KEY(serviceCode) REFERENCES IService(serviceCode)
+
+);
+CREATE INDEX IRoute ON IRoute(serviceCode, stopCode, stopNumber);
+
+CREATE TABLE EService (
   serviceNumber TEXT NOT NULL,
-  operator INTEGER NOT NULL,
+  operator TEXT NOT NULL,
   direction INTEGER NOT NULL,
-  category INTEGER NOT NULL,
+  category TEXT NOT NULL,
   originCode TEXT NULLABLE ,
   destinationCode TEXT NULLABLE ,
-  amPeakFrequency TEXT NOT NULL,
-  amOffpeakFrequency TEXT NOT NULL,
-  pmPeakFrequency TEXT NOT NULL,
-  pmOffpeakFrequency TEXT NOT NULL,
-  loopDescription STRING NULLABLE,
-  PRIMARY KEY (serviceNumber, direction),
-  FOREIGN KEY(originCode) REFERENCES Stop(busStopCode),
-  FOREIGN KEY(destinationCode) REFERENCES Stop(busStopCode)
+  amPeakFrequency TEXT,
+  amOffpeakFrequency TEXT,
+  pmPeakFrequency TEXT,
+  pmOffpeakFrequency TEXT,
+  loopDescription TEXT NULLABLE,
+  origin TEXT NOT NULL,
+  destination TEXT NOT NULL,
+  PRIMARY KEY (serviceNumber, direction)
 );
 
-CREATE INDEX ServiceIndex
-  on Service (serviceNumber, direction, originCode,destinationCode);
+CREATE INDEX EServiceIndex
+  on EService (serviceNumber, direction, originCode, destinationCode);
 
--- Create Route --
-/*
-{
-    "ServiceNo": "10",
-    "Operator": "SBST",
-    "Direction": 1,
-    "StopSequence": 1,
-    "BusStopCode": "75009",
-    "Distance": 0,
-    "WD_FirstBus": "0500",
-    "WD_LastBus": "2300",
-    "SAT_FirstBus": "0500",
-    "SAT_LastBus": "2300",
-    "SUN_FirstBus": "0500",
-    "SUN_LastBus": "2300"
-}
- */
-
-CREATE TABLE Route (
+CREATE TABLE ERoute (
   serviceNumber TEXT NOT NULL,
   operator INTEGER NOT NULL,
   direction INTEGER NOT NULL,
@@ -93,22 +108,8 @@ CREATE TABLE Route (
   FOREIGN KEY(busStopCode) REFERENCES Stop(busStopCode)
 );
 
+CREATE INDEX ERouteIndex
+  on ERoute (serviceNumber, stopSequence, busStopCode);
 
-CREATE INDEX RouteIndex
-  on Route (serviceNumber, stopSequence, busStopCode);
 
-CREATE VIEW ServiceExtended AS
-  SELECT service.*,
-    origin.description as originDescription,
-    destination.description AS destinationDescription
-  FROM service AS service
-    LEFT OUTER JOIN stop AS origin ON service.originCode = origin.busStopCode
-    LEFT OUTER JOIN stop AS destination ON service.destinationCode = destination.busStopCode
-  ORDER BY service.serviceNumber ASC;--
-
-CREATE VIEW RouteExtended AS
-  SELECT route.*, stop.*
-  FROM route
-    LEFT OUTER JOIN stop AS stop ON route.busStopCode = stop.busStopCode
-  ORDER BY stopSequence ASC;--
 
