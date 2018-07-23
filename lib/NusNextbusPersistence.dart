@@ -322,15 +322,36 @@ class NusNextbusPersistence {
                   "${_isNullFormat(serviceCode)}, ${_isNullFormat(routeStop.busStopCode)}, "
                   "${index++}, ${_isNullFormatDouble(routeStop.stopName)}"
                   ");\r\n");
-
-
-              // TODO: A2E is not working to do manually.
-
           });
 
       });
 
-      sink.write("\r\n -- EOF --");
+      // TODO: A2E is not working to do manually.
+      index = 0;
+      sink.write("\r\n\r\n-- A2E Special --\r\n ");
+
+
+      sink.write("INSERT INTO '${IROUTE_TABLE_NAME}' VALUES ("
+          "\"A2E\", \"LT13\", ${index++}, \"LT13\""
+          ");\r\n");
+
+      sink.write("INSERT INTO '${IROUTE_TABLE_NAME}' VALUES ("
+          "\"A2E\", \"COMCEN\", ${index++}, \"Information Technology\""
+          ");\r\n");
+
+      sink.write("INSERT INTO '${IROUTE_TABLE_NAME}' VALUES ("
+          "\"A2E\", \"S17\", ${index++}, \"S17\""
+          ");\r\n");
+
+      sink.write("INSERT INTO '${IROUTE_TABLE_NAME}' VALUES ("
+          "\"A2E\", \"KR-MRT-OPP\", ${index++}, \"Opp Kent Ridge MRT\""
+          ");\r\n");
+
+      sink.write("INSERT INTO '${IROUTE_TABLE_NAME}' VALUES ("
+          "\"A2E\", \"LT13\", ${index++}, \"LT13\""
+          ");\r\n");
+
+      sink.write("\r\n -- EOF --\r\n");
       //sink.close();
   }
 
@@ -364,7 +385,7 @@ class NusNextbusPersistence {
           ");\r\n");
     });
 
-    sink.write("\r\n -- EOF --");
+    sink.write("\r\n -- EOF --\r\n");
     sink.close();
 
   }
