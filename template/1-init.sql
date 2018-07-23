@@ -14,8 +14,8 @@ CREATE TABLE Stop(
   latitude REAL NOT NULL ,
   longtitude REAL NOT NULL,
 
-  FOREIGN KEY(icode) REFERENCES IService(serviceCode)
-  --FOREIGN KEY(ecode) REFERENCES IService(serviceCode),
+  FOREIGN KEY(icode) REFERENCES IService(serviceCode),
+  FOREIGN KEY(ecode) REFERENCES EService(serviceNumber)
 );
 
 CREATE INDEX StopIndex ON Stop(id, icode, ecode, latitude, longtitude);
