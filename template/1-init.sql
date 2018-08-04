@@ -12,13 +12,13 @@ CREATE TABLE Stop(
   description TEXT,
   roadName Text NOT NULL,
   latitude REAL NOT NULL ,
-  longtitude REAL NOT NULL,
+  longitude REAL NOT NULL,
 
   FOREIGN KEY(icode) REFERENCES IService(serviceCode),
   FOREIGN KEY(ecode) REFERENCES EService(serviceNumber)
 );
 
-CREATE INDEX StopIndex ON Stop(id, icode, ecode, latitude, longtitude);
+CREATE INDEX StopIndex ON Stop(id, icode, ecode, latitude, longitude);
 
 -- Create Internal Service Table--
 CREATE TABLE IService (
@@ -93,7 +93,7 @@ CREATE INDEX EServiceIndex
 
 CREATE TABLE ERoute (
   serviceNumber TEXT NOT NULL,
-  operator INTEGER NOT NULL,
+  operator TEXT NOT NULL,
   direction INTEGER NOT NULL,
   stopSequence INTEGER NOT NULL,
   busStopCode TEXT NOT NULL,

@@ -151,12 +151,12 @@ class NusNextbusPersistence {
       String roadName = _isNullFormatDouble(staticStop["road_name"]);
 
       double lat = (stop==null?staticStop["latitude"]:stop.latitude);
-      double long = (stop==null?staticStop["longtitude"]:stop.longitude);
+      double long = (stop==null?staticStop["longitude"]:stop.longitude);
 
 
 
 
-      sink.write("INSERT INTO 'Stop' ('icode','ecode' ,'caption' ,'description' ,'roadName' ,'latitude', 'longtitude') "
+      sink.write("INSERT INTO 'Stop' ('icode','ecode' ,'caption' ,'description' ,'roadName' ,'latitude', 'longitude') "
           "VALUES (${icode},${ecode},${caption},${description}, ${roadName}, ${lat}, ${long});\n");
     });
 
@@ -361,7 +361,8 @@ class NusNextbusPersistence {
     File operatingHoursSqlFile = new File("./${BUILD_DIRECTORY}/${POPULATE_INTERNAL_OPERATING_HOURS}")..createSync();
     IOSink sink = operatingHoursSqlFile.openWrite();
 
-    sink.write('-- NusNextbusPersistence: Operating Hours Table --\r\n');
+    sink.write('-- NusNextbusPersistence: Ope'
+        '.0rating Hours Table --\r\n');
     sink.write("-- Created: ${new DateTime.now()} --\r\n\r\n");
     
     staticOperatingHours.forEach((k, v) {
