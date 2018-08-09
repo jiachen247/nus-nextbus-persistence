@@ -318,6 +318,27 @@ class NusNextbusPersistence {
 
           route.routeStops.forEach(await (RouteStop routeStop){
 
+              // Last Bus Stop does not include Bus Stop Id
+
+              if(routeStop.busStopCode == null || routeStop.busStopCode == ""){
+                  switch(routeStop.stopName){
+                      case "Prince George's Park": {
+                            routeStop.busStopCode = "PGPT";
+                      }
+                      break;
+                      case "BIZ 2": {
+                          routeStop.busStopCode = "BIZ2";
+                      }
+                      break;
+                    }
+
+                    if(routeStop.stopName.contains("Kent Ridge Bus Terminal")){
+                        routeStop.busStopCode = "KR-BT";
+                    }
+              }
+
+
+
               sink.write("INSERT INTO '${IROUTE_TABLE_NAME}' VALUES ("
                   "${_isNullFormat(serviceCode)}, ${_isNullFormat(routeStop.busStopCode)}, "
                   "${index++}, ${_isNullFormatDouble(routeStop.stopName)}"
