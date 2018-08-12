@@ -1,6 +1,5 @@
 /*
-  !!! create tables!!!
-  todo: work out fks and indexs
+  !!! script to create tables!!!
  */
 
 -- Create Stops Table--
@@ -110,6 +109,11 @@ CREATE TABLE ERoute (
 
 CREATE INDEX ERouteIndex
   on ERoute (serviceNumber, stopSequence, busStopCode);
+
+CREATE TABLE Version (
+  versionNumber TEXT PRIMARY KEY
+);
+
 
 
 

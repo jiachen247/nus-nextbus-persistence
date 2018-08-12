@@ -11,6 +11,8 @@ C:\Users\User\Desktop\nus-nextbus-persistence\bin\sqlite3 %db_name% < C:\Users\U
 C:\Users\User\Desktop\nus-nextbus-persistence\bin\sqlite3 %db_name% < C:\Users\User\Desktop\nus-nextbus-persistence\build\6-populate-stops.sql
 C:\Users\User\Desktop\nus-nextbus-persistence\bin\sqlite3 %db_name% < C:\Users\User\Desktop\nus-nextbus-persistence\build\7-populate-iroutes.sql
 C:\Users\User\Desktop\nus-nextbus-persistence\bin\sqlite3 %db_name% < C:\Users\User\Desktop\nus-nextbus-persistence\build\8-populate-eroutes.sql
+C:\Users\User\Desktop\nus-nextbus-persistence\bin\sqlite3 %db_name% < C:\Users\User\Desktop\nus-nextbus-persistence\build\9-version.sql
+
 
 
 exit

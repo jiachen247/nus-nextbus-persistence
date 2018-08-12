@@ -5,6 +5,7 @@ import 'package:nus_nextbus_api/src/models/BusStop.dart';
 import 'package:nus_nextbus_api/src/models/BusStops.dart';
 import 'package:nus_nextbus_api/src/models/Route.dart';
 import 'package:nus_nextbus_api/src/models/RouteStop.dart';
+import 'package:nus_nextbus_persistence/Config.dart';
 import 'package:nus_nextbus_persistence/StaticSource.dart';
 
 class NusNextbusPersistence {
@@ -23,6 +24,7 @@ class NusNextbusPersistence {
   final String POPULATE_STOPS_DB_FILENAME = "6-populate-stops.sql";
   final String POPULATE_INTERNAL_ROUTE = "7-populate-iroutes.sql";
   final String POPULATE_EXTERNAL_ROUTE = "8-populate-eroutes.sql";
+  final String POPULATE_VERSION = "9-version.sql";
 
   final String STOP_TABLE_NAME = "Stop";
   final String ISERVICE_TABLE_NAME = "IService";
@@ -32,6 +34,7 @@ class NusNextbusPersistence {
 
   final String ESERVICES_TABLE_NAME = "EService";
   final String EROUTE_TABLE_NAME = "ERoute";
+  final String VERSION_TABLE_NAME = "Version";
 
   StaticSource source = new StaticSource();
 
@@ -70,6 +73,7 @@ class NusNextbusPersistence {
     await generateStops();
     await generateIRoute();
     await generateERoute();
+    generateDatabaseVersion();
 
     print("finished yay :)");
   }
@@ -146,7 +150,7 @@ class NusNextbusPersistence {
         icode = _isNullFormat(icode);
         ecode = _isNullFormat(ecode);
 
-      String caption = stop==null?null:_isNullFormatDouble(stop.caption);
+      String caption = stop==null?icode:_isNullFormatDouble(stop.caption);
       String description = _isNullFormatDouble(staticStop["description"]);
       String roadName = _isNullFormatDouble(staticStop["road_name"]);
 
@@ -497,6 +501,19 @@ class NusNextbusPersistence {
       sink.close();
 
 
+  }
+
+  void generateDatabaseVersion(){
+      String query = "INSERT INTO Version VALUES ('${DATABASE_VERSION}');--";
+
+      File operatingHoursSqlFile = new File("./${BUILD_DIRECTORY}/${POPULATE_VERSION}")..createSync();
+      IOSink sink = operatingHoursSqlFile.openWrite();
+
+      sink.write('-- NusNextbusPersistence: Version Table --\r\n');
+      sink.write("-- Created: ${new DateTime.now()} --\r\n\r\n");
+        sink .write(query);
+      sink.write("\r\n -- EOF --");
+      sink.close();
   }
 
 
